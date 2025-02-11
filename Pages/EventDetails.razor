@@ -1,0 +1,49 @@
+@page "/event-details/{EventId:int}"
+@inject EventEaseApp.EventService EventService
+@inject EventEaseApp.UserSessionService UserSessionService
+
+<h3>Event Details</h3>
+
+@if (Event != null)
+{
+    <div>
+        <h4>@Event.EventName</h4>
+        <p>Date: @Event.Date.ToString("MMMM dd, yyyy")</p>
+        <p>Location: @Event.Location</p>
+        <a href="/register-event/@Event.Id" class="btn btn-primary">Register</a>
+    </div>
+
+    <a href="/" class="btn btn-primary">Back to Events</a>
+
+    @if (UserSessionService.IsSessionActive())
+    {
+        <div class="alert alert-info mt-3">
+            <strong>Current User:</strong> @UserSessionService.UserName<br />
+            <strong>Email:</strong> @UserSessionService.UserEmail<br />
+            <strong>Session Started:</strong> @UserSessionService.SessionStartTime
+        </div>
+    }
+    <h4>Attendees</h4>
+    <ul>
+        @foreach (var attendee in Event.Attendees)
+        {
+            <li>@attendee.Name (@attendee.Email)</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int EventId { get; set; }
+
+    private EventEaseApp.Event? Event { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Event = EventService.GetEventById(EventId);
+    }
+}

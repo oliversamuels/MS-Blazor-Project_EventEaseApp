@@ -1,0 +1,30 @@
+@page "/eventcrd"
+@inject EventEaseApp.EventService EventService;
+
+@if (Event != null)
+{
+    <div class="card my-3">
+        <div class="card-body">
+            <h5 class="card-title">@Event.EventName</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@Event.Date.ToString("MMMM dd, yyyy")</h6>
+            <p class="card-text">@Event.Location</p>
+            <a href="/event-details/@Event.Id" class="card-link">View Details</a>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int EventId { get; set; }
+
+    private EventEaseApp.Event? Event { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Event = EventService.GetEventById(EventId);
+    }
+}

@@ -1,0 +1,27 @@
+@page "/"
+@inject EventEaseApp.EventService EventService;
+
+<h3>Events</h3>
+
+<a href="/create-event" class="btn btn-primary">Create New Event</a>
+
+@if (events == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var eventItem in events)
+    {
+        <EventCard EventId="eventItem.Id" />
+    }
+}
+
+@code {
+    private IEnumerable<EventEaseApp.Event>? events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetEventsAsync();
+    }
+}
